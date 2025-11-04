@@ -115,7 +115,11 @@ class NPCAgent:
         return prompt
 
     def generate_dialogue(
-        self, player_input: str, story_state: StoryState, temperature: float = 0.8
+        self,
+        player_input: str,
+        story_state: StoryState,
+        temperature: float = 0.8,
+        max_tokens: int = 100,
     ) -> ActionResponse:
         """
         Generate a dialogue response based on player input and story context.
@@ -133,15 +137,6 @@ class NPCAgent:
         context_prompt = self._build_context_prompt(player_input, story_state)
 
         try:
-            # response = self.client.chat.completions.create(
-            #     model=self.model,
-            #     messages=[
-            #         {"role": "system", "content": "You are an expert at role-playing and creating immersive dialogue for interactive stories."},
-            #         {"role": "user", "content": context_prompt}
-            #     ],
-            #     temperature=temperature,
-            #     max_tokens=500
-            # )
             response = self.llm.generate_text(
                 [
                     {
@@ -151,10 +146,10 @@ class NPCAgent:
                     {"role": "user", "content": context_prompt},
                 ],
                 temperature=temperature,
-                max_tokens=500,
+                max_tokens=max_tokens,
             )
 
-            dialogue_text = response.strip()
+            dialogue_text: str | None = response if response else "..."
 
             # Remove quotes if the LLM adds them
             if (dialogue_text.startswith('"') and dialogue_text.endswith('"')) or (

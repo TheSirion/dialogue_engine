@@ -56,7 +56,7 @@ class Text_Generator:
         self,
         messages: list[ChatCompletionMessageParam],
         temperature: float = 0.8,
-        max_tokens: int = 200,
+        max_tokens: int = 100,
     ) -> str | None:
         try:
             response = self.llm_client.chat.completions.create(
