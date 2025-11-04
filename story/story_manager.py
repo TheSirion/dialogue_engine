@@ -24,8 +24,8 @@ class StoryManager:
         Args:
             settings: Game settings and configuration
         """
-        self.settings = settings or GameSettings()
-        self.story_state = StoryState()
+        self.settings: GameSettings = settings or GameSettings()
+        self.story_state: StoryState = StoryState()
         self.npc_memories: dict[str, NPCMemory] = {}
         self.conversation_history: list[dict[str, Any]] = []
 
