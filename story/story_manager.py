@@ -5,7 +5,7 @@ Story Manager that tracks plot state, memory, and goal management.
 import os
 import json
 import logging
-from typing import List, Dict, Optional, Any
+from typing import Any
 from datetime import datetime
 
 from models import StoryState, NPCMemory, GameSettings
@@ -17,7 +17,7 @@ class StoryManager:
     Acts as the central coordinator for story elements.
     """
 
-    def __init__(self, settings: Optional[GameSettings] = None):
+    def __init__(self, settings: GameSettings | None = None):
         """
         Initialize the Story Manager.
 
@@ -26,8 +26,8 @@ class StoryManager:
         """
         self.settings = settings or GameSettings()
         self.story_state = StoryState()
-        self.npc_memories: Dict[str, NPCMemory] = {}
-        self.conversation_history: List[Dict[str, Any]] = []
+        self.npc_memories: dict[str, NPCMemory] = {}
+        self.conversation_history: list[dict[str, Any]] = []
 
         self.log("Story Manager initialized")
 
@@ -35,7 +35,7 @@ class StoryManager:
         """Log a message with story manager context"""
         logging.info(f"[StoryManager] {message}")
 
-    def set_plot_points(self, plot_points: List[str]):
+    def set_plot_points(self, plot_points: list[str]):
         """
         Set or update plot points in the story.
 
@@ -61,7 +61,7 @@ class StoryManager:
             self.story_state.completed_events.append(event_name)
             self.log(f"Completed event: {event_name}")
 
-    def set_active_goals(self, goals: List[str]):
+    def set_active_goals(self, goals: list[str]):
         """
         Set active goals for the story.
 
@@ -103,7 +103,7 @@ class StoryManager:
         player_input: str,
         npc_name: str,
         npc_response: str,
-        metadata: Optional[Dict] = None,
+        metadata: dict[str, Any] | None = None,
     ):
         """
         Record a conversation exchange.
@@ -114,7 +114,7 @@ class StoryManager:
             npc_response: What the NPC said
             metadata: Additional metadata about the exchange
         """
-        exchange = {
+        exchange: dict[str, str | dict[str, Any]] = {
             "timestamp": datetime.now().isoformat(),
             "player_input": player_input,
             "npc_name": npc_name,
@@ -128,7 +128,7 @@ class StoryManager:
             self.conversation_history = self.conversation_history[-100:]
 
     def get_conversation_summary(
-        self, npc_name: Optional[str] = None, last_n: int = 5
+        self, npc_name: str | None = None, last_n: int = 5
     ) -> str:
         """
         Get a summary of recent conversations.
@@ -267,6 +267,6 @@ class StoryManager:
         self.npc_memories[npc_name] = memory
         self.log(f"Registered memory for {npc_name}")
 
-    def get_npc_memory(self, npc_name: str) -> Optional[NPCMemory]:
+    def get_npc_memory(self, npc_name: str) -> NPCMemory | None:
         """Get an NPC's memory"""
         return self.npc_memories.get(npc_name)
